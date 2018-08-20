@@ -3,7 +3,7 @@ package br.com.estudos.chat.actor;
 import javax.websocket.Session;
 
 import akka.actor.Props;
-import br.com.estudos.chat.tcp.TcpConnectionActor;
+import br.com.estudos.chat.tcp.ConnectionActor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -45,7 +45,7 @@ public class UserActor extends AbstractActor {
 		return receiveBuilder()
 		        .match(AddConnection.class, this::addConnection)
 				.match(AddTcpConnection.class, addTcpConnection -> {
-					ActorRef actorRef = getContext().actorOf(Props.create(TcpConnectionActor.class, addTcpConnection.actorRef));
+					ActorRef actorRef = getContext().actorOf(Props.create(ConnectionActor.class, addTcpConnection.actorRef));
                     actorRef.tell("teste", ActorRef.noSender());
 				})
 		        .build();

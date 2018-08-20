@@ -3,7 +3,6 @@ package br.com.estudos.chat;
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import br.com.estudos.chat.tcp.StartTcpConnectionActor;
-import br.com.estudos.chat.tcp.TcpConnectionActor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;

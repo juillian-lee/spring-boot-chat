@@ -12,25 +12,33 @@ import scala.collection.immutable.Iterable;
 
 /**
 
- TCP - WEB >>>>> USER
+ TCP AND WEB --> Connection -> USER -> CONNECTIONS
+
+
+ Outra alternativa
+
+ Criar path separados para cada um
+
+ tcp -> user -> connections /tpc/1/1023i19i9
+ web -> user -> connections /web/1/1023i19i9
 
 
 
  */
 @Component("tcpActor")
 @Scope("prototype")
-public class TcpConnectionActor extends AbstractActor {
+public class ConnectionActor extends AbstractActor {
 
     @Autowired
     ActorFactory actorFactory;
 
     public ActorRef tcpConnection;
 
-    public TcpConnectionActor() {
+    public ConnectionActor() {
 
     }
 
-    public TcpConnectionActor(ActorRef sender) {
+    public ConnectionActor(ActorRef sender) {
         this.tcpConnection = sender;
     }
 
