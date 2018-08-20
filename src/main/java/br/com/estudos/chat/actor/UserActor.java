@@ -2,6 +2,8 @@ package br.com.estudos.chat.actor;
 
 import javax.websocket.Session;
 
+import akka.actor.Props;
+import br.com.estudos.chat.tcp.TcpConnectionActor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -22,10 +24,6 @@ public class UserActor extends AbstractActor {
         actorRef.tell(addConection.session, ActorRef.noSender());
     }
 
-//	ActorRef create(Session session) {
-//		return getContext().actorOf(springExtension.props("webActor"), session.getId());
-//	}
-
 	static public class AddConnection {
 		public final Session session;
 
@@ -34,10 +32,22 @@ public class UserActor extends AbstractActor {
 		}
 	}
 
+	static public class AddTcpConnection {
+    	public final ActorRef actorRef;
+
+		public AddTcpConnection(ActorRef actorRef) {
+			this.actorRef = actorRef;
+		}
+	}
+
 	@Override
 	public Receive createReceive() {
 		return receiveBuilder()
 		        .match(AddConnection.class, this::addConnection)
+				.match(AddTcpConnection.class, addTcpConnection -> {
+					ActorRef actorRef = getContext().actorOf(Props.create(TcpConnectionActor.class, addTcpConnection.actorRef));
+                    actorRef.tell("teste", ActorRef.noSender());
+				})
 		        .build();
 	}
 
