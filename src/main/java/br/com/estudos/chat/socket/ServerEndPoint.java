@@ -1,16 +1,17 @@
 package br.com.estudos.chat.socket;
 
+import javax.websocket.OnClose;
 import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 
+import br.com.estudos.chat.actor.WebActor;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import akka.actor.ActorRef;
 import br.com.estudos.chat.actor.UserActor;
-import br.com.estudos.chat.actor.WorkerActor;
 import br.com.estudos.chat.actor.UserActor.AddConnection;
 import br.com.estudos.chat.component.ActorFactory;
 
@@ -19,12 +20,12 @@ public class ServerEndPoint {
 	
 	@Autowired
 	ActorFactory actorFactory;
-	
+
 	@OnOpen
-	public void open(final Session wsSession, @PathParam("id") String id) {
+	public void open(final Session session, @PathParam("id") String id) {
 		try {
-			ActorRef actorRef = actorFactory.getActorRef(UserActor.class, id);
-			actorRef.tell(new AddConnection(wsSession), ActorRef.noSender());
+			ActorRef actorRef = actorFactory.getActorRef(WebActor.class, session.getId());
+			actorRef.tell(session, ActorRef.noSender());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -32,7 +33,14 @@ public class ServerEndPoint {
 	
 	@OnMessage
     public void onMessage(String message, Session session, @PathParam("id") String id) throws Exception {
-		
+		ActorRef actorRef = actorFactory.getActorRef(WebActor.class, session.getId());
+		actorRef.tell(message, ActorRef.noSender());
     }
-	
+
+    @OnClose
+    public void onClose(Session session) throws Exception {
+        ActorRef actorRef = actorFactory.getActorRef(WebActor.class, session.getId());
+        actorRef.tell("stop", ActorRef.noSender());
+    }
+
 }

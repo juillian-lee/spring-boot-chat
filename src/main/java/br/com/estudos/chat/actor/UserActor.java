@@ -3,6 +3,7 @@ package br.com.estudos.chat.actor;
 import javax.websocket.Session;
 
 import akka.actor.Props;
+import br.com.estudos.chat.component.ActorFactory;
 import br.com.estudos.chat.tcp.ConnectionActor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -12,6 +13,8 @@ import akka.actor.AbstractActor;
 import akka.actor.ActorRef;
 import br.com.estudos.chat.SpringExtension;
 
+import java.util.Iterator;
+
 @Component("userActor")
 @Scope("prototype")
 public class UserActor extends AbstractActor {
@@ -19,12 +22,15 @@ public class UserActor extends AbstractActor {
 	@Autowired
     private SpringExtension springExtension;
 
-    private void addConnection(AddConnection addConection) {
-        ActorRef actorRef = WebActor.create(getContext(), springExtension, addConection.session);
-        actorRef.tell(addConection.session, ActorRef.noSender());
+	@Autowired
+	private ActorFactory actorFactory;
+
+    private void receiveMessage(String s) throws Exception {
+        ActorRef messageRouter = actorFactory.getActorRef(MessageRouter.class, "messageRouter");
+        messageRouter.tell(s, getSelf());
     }
 
-	static public class AddConnection {
+    static public class AddConnection {
 		public final Session session;
 
 		public AddConnection(Session session) {
@@ -40,14 +46,22 @@ public class UserActor extends AbstractActor {
 		}
 	}
 
+	public static class SendMessage {
+
+    }
+
 	@Override
 	public Receive createReceive() {
 		return receiveBuilder()
-		        .match(AddConnection.class, this::addConnection)
-				.match(AddTcpConnection.class, addTcpConnection -> {
-					ActorRef actorRef = getContext().actorOf(Props.create(ConnectionActor.class, addTcpConnection.actorRef));
-                    actorRef.tell("teste", ActorRef.noSender());
-				})
+                .match(MessageRouter.AddConnection.class, addConnection -> {
+                    String name = String.valueOf(addConnection.actor.path().uid());
+                    ActorRef actorRef = getContext().actorOf(Props.create(UserChildrenActor.class), name);
+                    actorRef.tell(addConnection, getSelf());
+                })
+				.match(String.class, this::receiveMessage)
+                .match(SendMessage.class, sendMessage -> {
+                    System.out.println("Chegou aqui");
+                })
 		        .build();
 	}
 

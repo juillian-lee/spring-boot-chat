@@ -18,6 +18,8 @@ public class ApplicationListener implements org.springframework.context.Applicat
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
+        actorSystem.actorOf(springExtension.props("messageRouter"), "messageRouter");
+
         ActorRef startTcpActor = actorSystem.actorOf(springExtension.props("startTcpActor"), "tcp");
         startTcpActor.tell(new StartTcpConnectionActor.Start(), ActorRef.noSender());
     }

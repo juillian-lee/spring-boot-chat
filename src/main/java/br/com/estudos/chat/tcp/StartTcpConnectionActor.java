@@ -30,7 +30,6 @@ public class StartTcpConnectionActor extends AbstractActor {
         return receiveBuilder()
                 .match(Start.class, this::start)
                 .match(Tcp.Connected.class, msg -> {
-
                     ActorRef tcpActor = getContext().actorOf(springExtension.props("tcpActor"), String.valueOf(getSender().path().uid()));
                     getSender().tell(TcpMessage.register(tcpActor), getSelf());
                 })
