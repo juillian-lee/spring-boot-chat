@@ -55,7 +55,7 @@ public class UserActor extends AbstractActor {
 		return receiveBuilder()
                 .match(MessageRouter.AddConnection.class, addConnection -> {
                     String name = String.valueOf(addConnection.actor.path().uid());
-                    ActorRef actorRef = getContext().actorOf(Props.create(UserChildrenActor.class), name);
+                    ActorRef actorRef = actorFactory.getActorRef(getContext(), UserChildrenActor.class, name);
                     actorRef.tell(addConnection, getSelf());
                 })
 				.match(String.class, this::receiveMessage)
