@@ -2,6 +2,7 @@ package br.com.estudos.chat.actor;
 
 import akka.actor.AbstractActor;
 import akka.actor.ActorRef;
+import br.com.estudos.chat.action.Action;
 import br.com.estudos.chat.action.ActionFactory;
 import br.com.estudos.chat.action.LoginAction;
 import br.com.estudos.chat.component.ActorFactory;
@@ -44,7 +45,7 @@ public class MessageRouter extends AbstractActor {
         return receiveBuilder()
                 .match(RawMessage.class, rawMessage -> {
                     String json = rawMessage.getText();
-                    Object action = actionFactory.fromJSON(json);
+                    Action action = actionFactory.fromJSON(json);
                     if(action != null) {
                         getSelf().tell(action, getSender());
                     }

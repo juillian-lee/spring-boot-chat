@@ -1,8 +1,6 @@
 package br.com.estudos.chat.action;
 
-import java.io.Serializable;
-
-public class LoginAction implements Serializable {
+public class LoginAction implements Action {
     private String login;
     private String password;
 

@@ -15,7 +15,7 @@ public class ActionFactory {
     ObjectMapper mapper;
 
 
-    public Object fromJSON(String json) throws JSONException, IOException {
+    public Action fromJSON(String json) throws JSONException, IOException {
         JSONObject obj = new JSONObject(json);
         String code = obj.optString("code");
         switch (code)  {
