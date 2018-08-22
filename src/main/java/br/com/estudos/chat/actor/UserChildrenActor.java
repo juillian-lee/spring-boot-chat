@@ -1,6 +1,7 @@
 package br.com.estudos.chat.actor;
 
 import akka.actor.AbstractActor;
+import akka.actor.Actor;
 import akka.actor.ActorRef;
 import br.com.estudos.chat.component.ActorFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,16 +17,17 @@ public class UserChildrenActor extends AbstractActor {
     @Autowired
     ActorFactory actorFactory;
 
+
+
     @Override
     public Receive createReceive() {
         return receiveBuilder()
                 .matchEquals("stop", s -> {
                     getContext().stop(getSelf());
                 })
-                .match(MessageRouter.AddConnection.class, addConnection -> {
-                    this.actorSender = addConnection.actor;
-                    WebActor.AddUserPath addUserPath = new WebActor.AddUserPath(getSelf().path().toString());
-                    this.actorSender.tell(addUserPath, getSelf());
+                .match(ActorRef.class, actorSender -> {
+                    this.actorSender = actorSender;
+                    getSender().tell(getSelf(), ActorRef.noSender());
                 })
                 .build();
     }

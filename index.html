@@ -27,6 +27,15 @@
 
                 var id = $('#id').val();
                 ws = new WebSocket("ws://localhost:8080/chat/" + id);
+
+                ws.onopen  = function() {
+                    ws.send(JSON.stringify({
+                        code: 'login',
+                        login: 'juillian1',
+                        password: 'juillian1'
+                    }));
+                }
+
             });
             
             $('#enviar').click(function(e) {

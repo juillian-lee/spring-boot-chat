@@ -8,6 +8,7 @@ import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 
 import br.com.estudos.chat.actor.WebActor;
+import br.com.estudos.chat.protocol.RawMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import akka.actor.ActorRef;
@@ -15,7 +16,11 @@ import br.com.estudos.chat.actor.UserActor;
 import br.com.estudos.chat.actor.UserActor.AddConnection;
 import br.com.estudos.chat.component.ActorFactory;
 
-@ServerEndpoint(value="/chat/{id}", configurator = CustomSpringConfigurator.class)
+@ServerEndpoint(value="/chat/{id}",
+        configurator = CustomSpringConfigurator.class,
+        encoders = WebSocketChatEncoder.class,
+        decoders = WebSocketChatDecoder.class
+)
 public class ServerEndPoint {
 	
 	@Autowired
@@ -32,9 +37,9 @@ public class ServerEndPoint {
 	}
 	
 	@OnMessage
-    public void onMessage(String message, Session session, @PathParam("id") String id) throws Exception {
+    public void onMessage(RawMessage rawMessage, Session session, @PathParam("id") String id) throws Exception {
 		ActorRef actorRef = actorFactory.getActorRef(WebActor.class, session.getId());
-		actorRef.tell(message, ActorRef.noSender());
+		actorRef.tell(rawMessage, ActorRef.noSender());
     }
 
     @OnClose

@@ -2,18 +2,15 @@ package br.com.estudos.chat.actor;
 
 import javax.websocket.Session;
 
-import akka.actor.*;
-import akka.pattern.AskableActorSelection;
-import akka.util.Timeout;
+import akka.actor.AbstractActor;
+import akka.actor.ActorRef;
+import br.com.estudos.chat.action.StopActor;
 import br.com.estudos.chat.component.ActorFactory;
+import br.com.estudos.chat.protocol.RawMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import scala.concurrent.Await;
-import scala.concurrent.Future;
-
-import java.util.concurrent.TimeUnit;
 
 @Component("webActor")
 @Scope("prototype")
@@ -22,36 +19,62 @@ public class WebActor extends AbstractActor {
     @Autowired
     private ActorFactory actorFactory;
 
+    ActorRef messageRouter;
     private Session session;
-    private String userChildrenPath;
+    private ActorRef userChildren;
 
-
-    public static class AddUserPath {
-        public final String path;
-
-        public AddUserPath(String path) {
-            this.path = path;
-        }
+    @Override
+    public void preStart() throws Exception {
+        messageRouter = actorFactory.getActorRef(MessageRouter.class, "messageRouter");
     }
 
     @Override
     public Receive createReceive() {
         return receiveBuilder()
-                .match(AddUserPath.class, addUserPath -> {
-                    this.userChildrenPath = addUserPath.path;
-                })
-                .matchEquals("stop", s -> {
-                    ActorRef actor = actorFactory.getActor(this.userChildrenPath);
-                    if(actor != null) {
-                        actor.tell("stop", ActorRef.noSender());
-                    }
-                    getContext().stop(getSelf());
-                })
-                .match(Session.class, session -> {
-                    this.session = session;
-                }).match(String.class, message -> {
-                    ActorRef messageRouter = actorFactory.getActorRef(MessageRouter.class, "messageRouter");
-                    messageRouter.tell(new MessageRouter.AddConnection(getSelf()), getSelf());
-                }).build();
+                .match(ActorRef.class, this::addActorChildren)
+                .matchEquals(StopActor.class, this::stopActor)
+                .match(Session.class, this::addSessionWebSocket)
+                .match(RawMessage.class, this::rawMessageReceive)
+                .build();
+    }
+
+    /**
+     * Metodo que recebe o ator criado para o children do usuario
+     * o ator que sera responsavel por esta conexao do usuario
+     *
+     * @param userChildren
+     */
+    private void addActorChildren(ActorRef userChildren) {
+        this.userChildren = userChildren;
+    }
+
+    /**
+     * Adiciona a sessao do webSocket no actor
+     *
+     * @param session
+     */
+    private void addSessionWebSocket(Session session) {
+        this.session = session;
+    }
+
+    /**
+     * Recebe uma rawMessage e passa para o userMessageRouter
+     * @param rawMessage
+     */
+    private void rawMessageReceive(RawMessage rawMessage) {
+        messageRouter.tell(rawMessage, getSelf());
+    }
+
+    /**
+     * Para o actor e destroy as referencias criadas para
+     * a comunicação com este ator.
+     *
+     * @param stopActorClass
+     */
+    private void stopActor(Class<StopActor> stopActorClass) {
+        if (userChildren != null) {
+            userChildren.tell("stop", ActorRef.noSender());
+        }
+        getContext().stop(getSelf());
     }
 }

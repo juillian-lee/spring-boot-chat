@@ -4,6 +4,7 @@ import javax.websocket.Session;
 
 import akka.actor.Props;
 import br.com.estudos.chat.component.ActorFactory;
+import br.com.estudos.chat.entity.Usuario;
 import br.com.estudos.chat.tcp.ConnectionActor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -20,15 +21,8 @@ import java.util.Iterator;
 public class UserActor extends AbstractActor {
 
 	@Autowired
-    private SpringExtension springExtension;
-
-	@Autowired
 	private ActorFactory actorFactory;
 
-    private void receiveMessage(String s) throws Exception {
-        ActorRef messageRouter = actorFactory.getActorRef(MessageRouter.class, "messageRouter");
-        messageRouter.tell(s, getSelf());
-    }
 
     static public class AddConnection {
 		public final Session session;
@@ -46,21 +40,15 @@ public class UserActor extends AbstractActor {
 		}
 	}
 
-	public static class SendMessage {
-
-    }
+    public static class AddSenderOnChildren {}
 
 	@Override
 	public Receive createReceive() {
 		return receiveBuilder()
-                .match(MessageRouter.AddConnection.class, addConnection -> {
-                    String name = String.valueOf(addConnection.actor.path().uid());
+                .match(Usuario.class, usuario -> {
+                    String name = String.valueOf(getSender().path().uid());
                     ActorRef actorRef = actorFactory.getActorRef(getContext(), UserChildrenActor.class, name);
-                    actorRef.tell(addConnection, getSelf());
-                })
-				.match(String.class, this::receiveMessage)
-                .match(SendMessage.class, sendMessage -> {
-                    System.out.println("Chegou aqui");
+                    actorRef.tell(getSender(), getSelf());
                 })
 		        .build();
 	}
