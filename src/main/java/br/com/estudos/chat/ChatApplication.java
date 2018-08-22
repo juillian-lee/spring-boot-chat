@@ -5,6 +5,7 @@ import br.com.estudos.chat.produces.SpringExtension;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
@@ -16,6 +17,9 @@ import org.springframework.web.socket.config.annotation.EnableWebSocket;
 @EnableWebSocket
 @Configuration
 public class ChatApplication {
+
+    @Value("${akka.actorSystem.name}")
+    private String actorSystemName;
 
 	@Autowired
 	private ApplicationContext applicationContext;
@@ -29,7 +33,7 @@ public class ChatApplication {
 
 	@Bean
 	public ActorSystem actorSystem() {
-		ActorSystem actorSystem = ActorSystem.create("chat", akkaConfiguration());
+		ActorSystem actorSystem = ActorSystem.create(actorSystemName, akkaConfiguration());
 		springExtension.initialize(applicationContext);
 		return actorSystem;
 	}
