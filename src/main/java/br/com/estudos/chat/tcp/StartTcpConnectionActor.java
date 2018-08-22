@@ -6,7 +6,7 @@ import akka.actor.ActorRef;
 import akka.actor.AbstractActor;
 import akka.io.Tcp;
 import akka.io.TcpMessage;
-import br.com.estudos.chat.SpringExtension;
+import br.com.estudos.chat.produces.SpringExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;

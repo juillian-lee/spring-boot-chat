@@ -1,4 +1,4 @@
-package br.com.estudos.chat;
+package br.com.estudos.chat.produces;
 
 import org.springframework.context.ApplicationContext;
 

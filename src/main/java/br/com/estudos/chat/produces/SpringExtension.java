@@ -1,5 +1,6 @@
-package br.com.estudos.chat;
+package br.com.estudos.chat.produces;
 
+import br.com.estudos.chat.produces.SpringActorProducer;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 

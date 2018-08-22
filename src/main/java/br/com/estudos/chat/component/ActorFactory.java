@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 import akka.pattern.AskableActorSelection;
 import akka.util.Timeout;
-import br.com.estudos.chat.SpringExtension;
+import br.com.estudos.chat.produces.SpringExtension;
 import br.com.estudos.chat.actor.UserActor;
 import scala.concurrent.Await;
 import scala.concurrent.Future;

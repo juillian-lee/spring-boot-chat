@@ -1,8 +1,9 @@
-package br.com.estudos.chat;
+package br.com.estudos.chat.start;
 
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import br.com.estudos.chat.entity.Usuario;
+import br.com.estudos.chat.produces.SpringExtension;
 import br.com.estudos.chat.repository.UsuarioRepository;
 import br.com.estudos.chat.tcp.StartTcpConnectionActor;
 import org.springframework.beans.factory.annotation.Autowired;
