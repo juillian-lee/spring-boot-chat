@@ -1,5 +1,7 @@
-package br.com.estudos.chat.action;
+package br.com.estudos.chat.component;
 
+import br.com.estudos.chat.action.Action;
+import br.com.estudos.chat.action.LoginAction;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONException;
 import org.json.JSONObject;
