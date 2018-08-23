@@ -1,4 +1,4 @@
-package br.com.estudos.chat.component;
+package br.com.estudos.chat.action;
 
 import br.com.estudos.chat.action.Action;
 import br.com.estudos.chat.action.LoginAction;

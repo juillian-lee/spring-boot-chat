@@ -3,7 +3,7 @@ package br.com.estudos.chat.actor;
 import akka.actor.AbstractActor;
 import akka.actor.ActorRef;
 import br.com.estudos.chat.action.Action;
-import br.com.estudos.chat.component.ActionFactory;
+import br.com.estudos.chat.action.ActionFactory;
 import br.com.estudos.chat.action.LoginAction;
 import br.com.estudos.chat.component.ActorFactory;
 import br.com.estudos.chat.entity.Usuario;
