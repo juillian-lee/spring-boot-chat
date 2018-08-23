@@ -5,7 +5,6 @@ import akka.actor.ActorRef;
 import br.com.estudos.chat.action.Action;
 import br.com.estudos.chat.action.ActionFactory;
 import br.com.estudos.chat.action.LoginAction;
-import br.com.estudos.chat.component.ActorFactory;
 import br.com.estudos.chat.entity.Usuario;
 import br.com.estudos.chat.protocol.RawMessage;
 import br.com.estudos.chat.repository.UsuarioRepository;

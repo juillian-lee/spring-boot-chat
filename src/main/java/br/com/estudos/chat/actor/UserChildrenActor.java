@@ -1,10 +1,8 @@
 package br.com.estudos.chat.actor;
 
 import akka.actor.AbstractActor;
-import akka.actor.Actor;
 import akka.actor.ActorRef;
 import br.com.estudos.chat.action.StopActor;
-import br.com.estudos.chat.component.ActorFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;

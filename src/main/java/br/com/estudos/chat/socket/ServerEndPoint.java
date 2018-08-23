@@ -13,9 +13,7 @@ import br.com.estudos.chat.protocol.RawMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import akka.actor.ActorRef;
-import br.com.estudos.chat.actor.UserActor;
-import br.com.estudos.chat.actor.UserActor.AddConnection;
-import br.com.estudos.chat.component.ActorFactory;
+import br.com.estudos.chat.actor.ActorFactory;
 
 @ServerEndpoint(value="/chat/{id}",
         configurator = CustomSpringConfigurator.class,

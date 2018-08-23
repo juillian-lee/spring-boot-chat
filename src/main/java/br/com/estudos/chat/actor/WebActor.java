@@ -5,7 +5,6 @@ import javax.websocket.Session;
 import akka.actor.AbstractActor;
 import akka.actor.ActorRef;
 import br.com.estudos.chat.action.StopActor;
-import br.com.estudos.chat.component.ActorFactory;
 import br.com.estudos.chat.protocol.RawMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;

@@ -4,7 +4,7 @@ import akka.actor.AbstractActor;
 import akka.actor.ActorRef;
 import akka.io.Tcp;
 import br.com.estudos.chat.actor.UserActor;
-import br.com.estudos.chat.component.ActorFactory;
+import br.com.estudos.chat.actor.ActorFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;

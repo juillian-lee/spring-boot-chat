@@ -2,7 +2,6 @@ package br.com.estudos.chat.actor;
 
 import javax.websocket.Session;
 
-import br.com.estudos.chat.component.ActorFactory;
 import br.com.estudos.chat.entity.Usuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;

@@ -1,4 +1,4 @@
-package br.com.estudos.chat.component;
+package br.com.estudos.chat.actor;
 
 import java.util.concurrent.TimeUnit;
 
