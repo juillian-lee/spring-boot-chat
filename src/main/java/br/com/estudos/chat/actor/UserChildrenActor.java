@@ -3,6 +3,7 @@ package br.com.estudos.chat.actor;
 import akka.actor.AbstractActor;
 import akka.actor.Actor;
 import akka.actor.ActorRef;
+import br.com.estudos.chat.action.StopActor;
 import br.com.estudos.chat.component.ActorFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -22,7 +23,7 @@ public class UserChildrenActor extends AbstractActor {
     @Override
     public Receive createReceive() {
         return receiveBuilder()
-                .matchEquals("stop", s -> {
+                .matchEquals(StopActor.class, s -> {
                     getContext().stop(getSelf());
                 })
                 .match(ActorRef.class, actorSender -> {

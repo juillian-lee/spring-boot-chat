@@ -7,6 +7,7 @@ import javax.websocket.Session;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 
+import br.com.estudos.chat.action.StopActor;
 import br.com.estudos.chat.actor.WebActor;
 import br.com.estudos.chat.protocol.RawMessage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +46,7 @@ public class ServerEndPoint {
     @OnClose
     public void onClose(Session session) throws Exception {
         ActorRef actorRef = actorFactory.getActorRef(WebActor.class, session.getId());
-        actorRef.tell("stop", ActorRef.noSender());
+        actorRef.tell(StopActor.class, ActorRef.noSender());
     }
 
 }

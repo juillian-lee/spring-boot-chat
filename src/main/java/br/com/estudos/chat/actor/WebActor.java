@@ -73,7 +73,7 @@ public class WebActor extends AbstractActor {
      */
     private void stopActor(Class<StopActor> stopActorClass) {
         if (userChildren != null) {
-            userChildren.tell("stop", ActorRef.noSender());
+            userChildren.tell(StopActor.class, ActorRef.noSender());
         }
         getContext().stop(getSelf());
     }
