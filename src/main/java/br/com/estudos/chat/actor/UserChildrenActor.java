@@ -28,7 +28,7 @@ public class UserChildrenActor extends AbstractActor {
                 })
                 .match(ActorRef.class, actorSender -> {
                     this.actorSender = actorSender;
-                    getSender().tell(getSelf(), ActorRef.noSender());
+                    this.actorSender.tell(getSelf(), ActorRef.noSender());
                 })
                 .build();
     }

@@ -35,8 +35,6 @@ public class UserActor extends AbstractActor {
 		}
 	}
 
-    public static class AddSenderOnChildren {}
-
 	@Override
 	public Receive createReceive() {
 		return receiveBuilder()

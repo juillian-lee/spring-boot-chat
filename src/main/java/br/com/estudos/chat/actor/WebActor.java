@@ -21,7 +21,7 @@ public class WebActor extends AbstractActor {
 
     ActorRef messageRouter;
     private Session session;
-    private ActorRef userChildren;
+    private ActorRef userChildrenReference;
 
     @Override
     public void preStart() throws Exception {
@@ -31,10 +31,10 @@ public class WebActor extends AbstractActor {
     @Override
     public Receive createReceive() {
         return receiveBuilder()
-                .match(ActorRef.class, this::addActorChildren)
-                .matchEquals(StopActor.class, this::stopActor)
-                .match(Session.class, this::addSessionWebSocket)
                 .match(RawMessage.class, this::rawMessageReceive)
+                .match(ActorRef.class, this::addActorUserChildrenReference)
+                .match(Session.class, this::addSessionWebSocket)
+                .matchEquals(StopActor.class, this::stopActor)
                 .build();
     }
 
@@ -42,10 +42,10 @@ public class WebActor extends AbstractActor {
      * Metodo que recebe o ator criado para o children do usuario
      * o ator que sera responsavel por esta conexao do usuario
      *
-     * @param userChildren
+     * @param userChildrenReference
      */
-    private void addActorChildren(ActorRef userChildren) {
-        this.userChildren = userChildren;
+    private void addActorUserChildrenReference(ActorRef userChildrenReference) {
+        this.userChildrenReference = userChildrenReference;
     }
 
     /**
@@ -72,8 +72,8 @@ public class WebActor extends AbstractActor {
      * @param stopActorClass
      */
     private void stopActor(Class<StopActor> stopActorClass) {
-        if (userChildren != null) {
-            userChildren.tell(StopActor.class, ActorRef.noSender());
+        if (userChildrenReference != null) {
+            userChildrenReference.tell(StopActor.class, ActorRef.noSender());
         }
         getContext().stop(getSelf());
     }
