@@ -1,9 +1,14 @@
 package br.com.estudos.chat.action.response;
 
 import akka.actor.ActorRef;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class Response {
+
+    @JsonIgnore
     protected ActorRef actorFrom;
+
+    @JsonIgnore
     protected ActorRef actorTo;
     protected String code;
 

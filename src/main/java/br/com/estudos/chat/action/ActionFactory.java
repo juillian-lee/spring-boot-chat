@@ -19,9 +19,9 @@ public class ActionFactory {
 
     public Action fromJSON(String json) throws JSONException, IOException {
         JSONObject obj = new JSONObject(json);
-        String code = obj.optString("code");
+        String code = obj.optString("code").toUpperCase();
         switch (code)  {
-            case "login":
+            case ActionCode.LOGIN:
                 return mapper.readValue(json, LoginAction.class);
         }
         return null;

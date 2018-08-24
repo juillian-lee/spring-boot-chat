@@ -49,8 +49,8 @@ public class ConnectionActor extends AbstractActor {
                     System.out.println(getContext());
                     System.out.println(getSender());
                     System.out.println(getSelf());
-                    ActorRef actorRef = actorFactory.getActorRef(UserActor.class, "1");
-                    actorRef.tell(new UserActor.AddTcpConnection(getSelf()), ActorRef.noSender());
+//                    ActorRef actorRef = actorFactory.getActorRef(UserActor.class, "1");
+//                    actorRef.tell(new UserActor.AddTcpConnection(getSelf()), ActorRef.noSender());
                 })
                 .match(String.class, s -> {
                     Iterable<ActorRef> children = getContext().children();

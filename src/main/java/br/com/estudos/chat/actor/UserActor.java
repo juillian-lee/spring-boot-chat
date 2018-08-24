@@ -6,6 +6,7 @@ import akka.io.Tcp;
 import akka.io.TcpMessage;
 import akka.util.ByteString;
 import akka.util.ByteStringBuilder;
+import br.com.estudos.chat.action.ActionCode;
 import br.com.estudos.chat.action.response.LoginResponse;
 import br.com.estudos.chat.action.response.Response;
 import br.com.estudos.chat.entity.Usuario;
@@ -28,7 +29,6 @@ public class UserActor extends AbstractActor {
     @Autowired
     ObjectMapper mapper;
 
-
     @Override
     public Receive createReceive() {
         return receiveBuilder()
@@ -37,7 +37,7 @@ public class UserActor extends AbstractActor {
                     ActorRef actorRef = actorFactory.getActorRef(getContext(), UserChildrenActor.class, name);
                     actorRef.tell(getSender(), getSelf());
 
-                    LoginResponse loginResponse = new LoginResponse(getSelf(), actorRef, "LOGIN_SUCCESS");
+                    LoginResponse loginResponse = new LoginResponse(getSelf(), actorRef, ActionCode.LOGIN_SUCCESS);
                     loginResponse.setMessage("Login realizado com sucesso.");
 
                     getSelf().tell(loginResponse, ActorRef.noSender());
