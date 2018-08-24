@@ -34,6 +34,14 @@ public class MessageRouter extends AbstractActor {
     UsuarioRepository usuarioRepository;
 
 
+    public static class LoginSuccess {
+        public final Usuario usuario;
+
+        public LoginSuccess(Usuario usuario) {
+            this.usuario = usuario;
+        }
+    }
+
     @Override
     public Receive createReceive() {
         return receiveBuilder()
@@ -68,7 +76,9 @@ public class MessageRouter extends AbstractActor {
         if (usuarioOptional.isPresent()) {
             Usuario usuario = usuarioOptional.get();
             ActorRef actorRef = actorFactory.getActorRef(UserActor.class, String.valueOf(usuario.getId()));
-            actorRef.tell(usuario, getSender());
+
+            LoginSuccess loginSuccess = new LoginSuccess(usuario);
+            actorRef.tell(loginSuccess, getSender());
         }
     }
 }

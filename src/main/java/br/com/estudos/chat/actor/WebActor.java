@@ -4,11 +4,14 @@ import javax.websocket.Session;
 
 import akka.actor.AbstractActor;
 import akka.actor.ActorRef;
+import akka.io.Tcp;
 import br.com.estudos.chat.action.StopActor;
 import br.com.estudos.chat.protocol.RawMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+
+import java.io.IOException;
 
 
 @Component("webActor")
@@ -33,7 +36,8 @@ public class WebActor extends AbstractActor {
                 .match(RawMessage.class, this::rawMessageReceive)
                 .match(ActorRef.class, this::addActorUserChildrenReference)
                 .match(Session.class, this::addSessionWebSocket)
-                .matchEquals(StopActor.class, this::stopActor)
+                .match(StopActor.class, this::stopActor)
+                .match(Tcp.Write.class, this::writeMessage)
                 .build();
     }
 
@@ -70,10 +74,20 @@ public class WebActor extends AbstractActor {
      *
      * @param stopActorClass
      */
-    private void stopActor(Class<StopActor> stopActorClass) {
+    private void stopActor(StopActor stopActorClass) {
         if (userChildrenReference != null) {
             userChildrenReference.tell(StopActor.class, ActorRef.noSender());
         }
         getContext().stop(getSelf());
+    }
+
+    private void writeMessage(Tcp.Write write) throws IOException {
+        if (session != null && session.isOpen()) {
+            byte[] bytes = write.data().toArray();
+            RawMessage rawMessage = new RawMessage(bytes);
+            session.getBasicRemote().sendText(rawMessage.toString());
+            return;
+        }
+        getSelf().tell(StopActor.class, getSelf());
     }
 }

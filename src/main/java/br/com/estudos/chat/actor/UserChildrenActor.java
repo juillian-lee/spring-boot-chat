@@ -2,7 +2,9 @@ package br.com.estudos.chat.actor;
 
 import akka.actor.AbstractActor;
 import akka.actor.ActorRef;
+import akka.io.Tcp;
 import br.com.estudos.chat.action.StopActor;
+import br.com.estudos.chat.protocol.RawMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -27,6 +29,9 @@ public class UserChildrenActor extends AbstractActor {
                 .match(ActorRef.class, actorSender -> {
                     this.actorSender = actorSender;
                     this.actorSender.tell(getSelf(), ActorRef.noSender());
+                })
+                .match(Tcp.Write.class, write -> {
+                    this.actorSender.tell(write, getSelf());
                 })
                 .build();
     }
