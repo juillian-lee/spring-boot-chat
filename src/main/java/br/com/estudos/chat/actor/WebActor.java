@@ -7,6 +7,8 @@ import akka.actor.ActorRef;
 import akka.io.Tcp;
 import br.com.estudos.chat.action.StopActor;
 import br.com.estudos.chat.protocol.RawMessage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -17,6 +19,8 @@ import java.io.IOException;
 @Component("webActor")
 @Scope("prototype")
 public class WebActor extends AbstractActor {
+
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     private ActorFactory actorFactory;
@@ -62,10 +66,14 @@ public class WebActor extends AbstractActor {
 
     /**
      * Recebe uma rawMessage e passa para o userMessageRouter
+     *
      * @param rawMessage
      */
     private void rawMessageReceive(RawMessage rawMessage) {
-        messageRouter.tell(rawMessage, getSelf());
+        log.debug(">>> Chegou o rawMessage" + rawMessage);
+        log.debug(">> userChildrenReference" + this.userChildrenReference);
+        log.debug(">> self" + getSelf());
+        messageRouter.tell(rawMessage, this.userChildrenReference == null ? getSelf() : this.userChildrenReference);
     }
 
     /**
@@ -76,7 +84,7 @@ public class WebActor extends AbstractActor {
      */
     private void stopActor(StopActor stopActorClass) {
         if (userChildrenReference != null) {
-            userChildrenReference.tell(StopActor.class, ActorRef.noSender());
+            userChildrenReference.tell(new StopActor(), ActorRef.noSender());
         }
         getContext().stop(getSelf());
     }

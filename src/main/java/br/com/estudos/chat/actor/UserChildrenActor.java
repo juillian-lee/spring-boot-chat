@@ -4,6 +4,9 @@ import akka.actor.AbstractActor;
 import akka.actor.ActorRef;
 import akka.io.Tcp;
 import br.com.estudos.chat.action.StopActor;
+import br.com.estudos.chat.action.response.MessageStatus;
+import br.com.estudos.chat.action.response.ReplicateOtherConnectionsResponse;
+import br.com.estudos.chat.action.response.Response;
 import br.com.estudos.chat.protocol.RawMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -25,6 +28,12 @@ public class UserChildrenActor extends AbstractActor {
         return receiveBuilder()
                 .matchEquals(StopActor.class, s -> {
                     getContext().stop(getSelf());
+                })
+                .match(ReplicateOtherConnectionsResponse.class, replicate -> {
+                    getContext().getParent().tell(replicate, getSelf());
+                })
+                .match(Response.class, response -> {
+                    getContext().getParent().tell(response, getSelf());
                 })
                 .match(ActorRef.class, actorSender -> {
                     this.actorSender = actorSender;

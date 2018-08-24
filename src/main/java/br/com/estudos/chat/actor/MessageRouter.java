@@ -5,6 +5,11 @@ import akka.actor.ActorRef;
 import br.com.estudos.chat.action.Action;
 import br.com.estudos.chat.action.ActionFactory;
 import br.com.estudos.chat.action.LoginAction;
+import br.com.estudos.chat.action.MessageAction;
+import br.com.estudos.chat.action.response.MessageResponse;
+import br.com.estudos.chat.action.response.MessageStatus;
+import br.com.estudos.chat.action.response.ReplicateOtherConnectionsResponse;
+import br.com.estudos.chat.action.response.Response;
 import br.com.estudos.chat.entity.Usuario;
 import br.com.estudos.chat.protocol.RawMessage;
 import br.com.estudos.chat.repository.UsuarioRepository;
@@ -47,6 +52,14 @@ public class MessageRouter extends AbstractActor {
         return receiveBuilder()
                 .match(RawMessage.class, this::rawMessage)
                 .match(LoginAction.class, this::loginAction)
+                .match(MessageAction.class, messageAction -> {
+                    MessageResponse msgResponse = new MessageResponse(getSelf(), getSender(), "msg");
+                    msgResponse.setIdentifier("xxxx");
+                    msgResponse.setMsgId("asda");
+                    ReplicateOtherConnectionsResponse replicate = new ReplicateOtherConnectionsResponse(msgResponse);
+                    getSender().tell(replicate, getSelf());
+
+                })
                 .build();
     }
 
@@ -72,13 +85,17 @@ public class MessageRouter extends AbstractActor {
      * @throws Exception
      */
     private void loginAction(LoginAction loginAction) throws Exception {
+        log.debug(">>> Realizando Login");
         Optional<Usuario> usuarioOptional = usuarioRepository.login(loginAction.getLogin(), loginAction.getPassword());
         if (usuarioOptional.isPresent()) {
+            log.debug(">>> Usuário encontrado");
             Usuario usuario = usuarioOptional.get();
             ActorRef actorRef = actorFactory.getActorRef(UserActor.class, String.valueOf(usuario.getId()));
 
             LoginSuccess loginSuccess = new LoginSuccess(usuario);
             actorRef.tell(loginSuccess, getSender());
+        } else {
+            log.debug(">>> Usuário não encontrado");
         }
     }
 }

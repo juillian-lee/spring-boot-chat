@@ -40,7 +40,7 @@
             
             $('#enviar').click(function(e) {
                 e.preventDefault();
-                ws.send(JSON.stringify({msg: $("#mensagem").val()}));
+                ws.send(JSON.stringify({mensagem: $("#mensagem").val(), code: "msg"}));
             });
         });
 

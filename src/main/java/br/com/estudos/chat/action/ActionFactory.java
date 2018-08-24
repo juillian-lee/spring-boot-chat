@@ -20,9 +20,11 @@ public class ActionFactory {
     public Action fromJSON(String json) throws JSONException, IOException {
         JSONObject obj = new JSONObject(json);
         String code = obj.optString("code").toUpperCase();
-        switch (code)  {
+        switch (code) {
             case ActionCode.LOGIN:
                 return mapper.readValue(json, LoginAction.class);
+            case ActionCode.MSG:
+                return mapper.readValue(json, MessageAction.class);
         }
         return null;
     }
